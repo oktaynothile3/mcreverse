@@ -1,0 +1,28 @@
+name: Build Windows DLL
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2019
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+      
+      - name: Build x86 Release
+        run: msbuild mcreverse-proj.sln /p:Configuration=Release /p:Platform=x86 /t:Build /v:normal
+      
+      - name: Upload DLL
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcreverse-1.8.8
+          path: |
+            **/Release/*.dll
+            **/x86/Release/*.dll
+            **/Win32/Release/*.dll
